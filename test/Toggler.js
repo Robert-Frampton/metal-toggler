@@ -130,6 +130,36 @@ describe('Toggler', function() {
 			assert.ok(dom.hasClass(toggler.header, toggler.headerCollapsedClasses));
 			assert.ok(!dom.hasClass(toggler.header, toggler.headerExpandedClasses));
 		});
+
+		it('should fire an event when the header is toggled', function(done) {
+			let asserts = 3;
+
+			const content = dom.toElement('.toggler-content');
+			const header = dom.toElement('.toggler-btn');
+
+			toggler = new Toggler({
+				content: content,
+				header: header
+			});
+
+			content.addEventListener('headerToggled', function(event) {
+				--asserts;
+
+				assert.ok(event.type === 'headerToggled');
+			});
+
+			content.addEventListener('headerCollapsed', function(event) {
+				--asserts;
+
+				assert.ok(event.type === 'headerCollapsed');
+				assert.ok(asserts === 0);
+				
+				done();
+			});
+
+			dom.triggerEvent(header, 'click');
+			dom.triggerEvent(header, 'click');
+		});
 	});
 
 	describe('Delegate Toggler', function() {
